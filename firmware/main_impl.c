@@ -24,17 +24,27 @@
 #include "main_impl.h"
 #include "stm32l476g_discovery.h"
 
+#include "stm32l4xx_hal_uart.h"
+
+//sudo rfcomm connect 0 98:D3:32:70:5C:11 1
+
+extern UART_HandleTypeDef huart1;
+
+char *buff = "Hello\n\r";
+
 void main_init()
 {
-	  BSP_LED_Init(LED_RED);
-	  BSP_LED_Init(LED_GREEN);
+    BSP_LED_Init(LED_RED);
+    BSP_LED_Init(LED_GREEN);
 
-	  BSP_LED_On(LED_RED);
-	  BSP_LED_Off(LED_GREEN);
+    BSP_LED_On(LED_RED);
+    BSP_LED_Off(LED_GREEN);
 }
 
 void main_loop_step()
 {
+    HAL_UART_Transmit(&huart1, (uint8_t*)buff, 8, 5);
     BSP_LED_Toggle(LED_RED);
-    HAL_Delay(500);
+    BSP_LED_Toggle(LED_GREEN);
+    HAL_Delay(2000);
 }
