@@ -1,0 +1,3 @@
+[submodule "GroundControlStation/submodules/qt-qbs-application"]
+	path = GroundControlStation/submodules/qt-qbs-application
+	url = https://github.com/approximator/Qt-Qbs-Application.git
