@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>gui/qml/main.qml</file>
+        <file>gui/qml/Scene.qml</file>
+        <file>gui/qml/Aircraft.qml</file>
+    </qresource>
+</RCC>
