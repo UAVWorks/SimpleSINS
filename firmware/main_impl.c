@@ -23,28 +23,38 @@
 
 #include "main_impl.h"
 #include "stm32l476g_discovery.h"
-
 #include "stm32l4xx_hal_uart.h"
 
-//sudo rfcomm connect 0 98:D3:32:70:5C:11 1
+#include <mavlink.h>
+
+// rfcomm connect 0 98:D3:32:70:5C:11 1
+// rfcomm bind hci0 98:D3:32:70:5C:11 1
 
 extern UART_HandleTypeDef huart1;
 
-char *buff = "Hello\n\r";
+uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+mavlink_message_t msg;
 
 void main_init()
 {
     BSP_LED_Init(LED_RED);
     BSP_LED_Init(LED_GREEN);
 
-    BSP_LED_On(LED_RED);
+    BSP_LED_Off(LED_RED);
     BSP_LED_Off(LED_GREEN);
 }
 
 void main_loop_step()
 {
-    HAL_UART_Transmit(&huart1, (uint8_t*)buff, 8, 5);
-    BSP_LED_Toggle(LED_RED);
+    mavlink_msg_heartbeat_pack(1, 200, &msg, MAV_TYPE_GENERIC, MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_ARMED,
+                               HAL_GetTick(), MAV_STATE_ACTIVE);
+    uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
+    if (HAL_OK != HAL_UART_Transmit(&huart1, buf, len, 65000)) {
+        BSP_LED_On(LED_RED);
+    } else {
+        BSP_LED_Off(LED_RED);
+    }
+
     BSP_LED_Toggle(LED_GREEN);
-    HAL_Delay(2000);
+    HAL_Delay(1000);
 }
