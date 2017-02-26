@@ -23,6 +23,8 @@
 #ifndef SINS_AERIAL_VEHICLE_H
 #define SINS_AERIAL_VEHICLE_H
 
+#include "TTransport.h"
+
 #include <QObject>
 
 class TAerialVehicle : public QObject
@@ -35,6 +37,8 @@ public:
 private:
     TAerialVehicle(const TAerialVehicle &other) = delete;
     TAerialVehicle &operator=(const TAerialVehicle &other) = delete;
+
+    TTransport mTransport{};
 };
 
 #endif  // SINS_AERIAL_VEHICLE_H

@@ -34,6 +34,8 @@ Entity {
         InputSettings { }
     ]
 
+    AerialVehicle {}
+
     Aircraft {
         id: av
 
