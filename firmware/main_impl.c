@@ -22,6 +22,8 @@
  */
 
 #include "main_impl.h"
+#include "imu.h"
+
 #include "stm32l476g_discovery.h"
 #include "stm32l4xx_hal_uart.h"
 
@@ -42,10 +44,15 @@ void main_init()
 
     BSP_LED_Off(LED_RED);
     BSP_LED_Off(LED_GREEN);
+
+    imu_init();
 }
 
 void main_loop_step()
 {
+    mavlink_raw_imu_t imu_data;
+    imu_read(&imu_data);
+
     mavlink_msg_heartbeat_pack(1, 200, &msg, MAV_TYPE_GENERIC, MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_ARMED,
                                HAL_GetTick(), MAV_STATE_ACTIVE);
     uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
@@ -55,6 +62,16 @@ void main_loop_step()
         BSP_LED_Off(LED_RED);
     }
 
+    mavlink_msg_raw_imu_pack(1, MAV_COMP_ID_IMU, &msg, HAL_GetTick(), 0, 0, 0, imu_data.xgyro, imu_data.ygyro,
+                             imu_data.zgyro, 0, 0, 0);
+    len = mavlink_msg_to_send_buffer(buf, &msg);
+
+    if (HAL_OK != HAL_UART_Transmit(&huart1, buf, len, 65000)) {
+        BSP_LED_On(LED_RED);
+    } else {
+        BSP_LED_Off(LED_RED);
+    }
+
     BSP_LED_Toggle(LED_GREEN);
-    HAL_Delay(1000);
+    HAL_Delay(100);
 }

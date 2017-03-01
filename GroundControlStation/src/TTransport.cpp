@@ -85,13 +85,17 @@ void TTransport::onReadyRead()
         uint8_t msgReceived = mavlink_parse_char(MAVLINK_COMM_1, byteVal, &message, &status);
 
         if (msgReceived) {
-            qDebug() << "Received message with ID " << message.msgid;
 
             switch (message.msgid) {
                 case MAVLINK_MSG_ID_HEARTBEAT:
                     mavlink_heartbeat_t heartbeat;
                     mavlink_msg_heartbeat_decode(&message, &heartbeat);
-                    qDebug() << "heartbeat. Custom mode = " << heartbeat.custom_mode;
+                    break;
+                case MAVLINK_MSG_ID_RAW_IMU:
+                    mavlink_raw_imu_t imu_data;
+                    mavlink_msg_raw_imu_decode(&message, &imu_data);
+                    qDebug() << "Imu data. \nxgyro = " << imu_data.xgyro << "\nygyro = " << imu_data.ygyro
+                             << "\nzgyro = " << imu_data.zgyro;
                     break;
                 default:
                     qDebug() << "Unknown message";
