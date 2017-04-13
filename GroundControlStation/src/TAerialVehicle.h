@@ -23,13 +23,16 @@
 #ifndef SINS_AERIAL_VEHICLE_H
 #define SINS_AERIAL_VEHICLE_H
 
+#include "QQmlAutoPropertyHelpers.h"
 #include "TTransport.h"
 
 #include <QObject>
+#include <QVector3D>
 
 class TAerialVehicle : public QObject
 {
     Q_OBJECT
+    QML_WRITABLE_AUTO_PROPERTY(QVector3D, attitude)
 
 public:
     TAerialVehicle(QObject *parent = nullptr);
@@ -39,6 +42,9 @@ private:
     TAerialVehicle &operator=(const TAerialVehicle &other) = delete;
 
     TTransport mTransport{};
+
+private slots:
+    void onTransportUpdate(float roll, float pitch, float yaw);
 };
 
 #endif  // SINS_AERIAL_VEHICLE_H

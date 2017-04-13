@@ -19,11 +19,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <cmath>
+#include <QDebug>
 
 #include "TAerialVehicle.h"
 
 TAerialVehicle::TAerialVehicle(QObject *parent)
     : QObject(parent)
 {
+    connect(&mTransport, &TTransport::update, this, &TAerialVehicle::onTransportUpdate);
+}
+
+void TAerialVehicle::onTransportUpdate(float roll, float pitch, float yaw)
+{
+    qDebug() << __FUNCTION__;
+    m_attitude.setX(roll);
+    m_attitude.setY(pitch);
+    m_attitude.setZ(yaw);
+
+    emit attitudeChanged();
 }

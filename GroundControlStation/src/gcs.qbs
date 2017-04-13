@@ -25,9 +25,9 @@ QmlTools.QtQmlApplication {
 
     Depends { name: "cpp" }
     Depends { name: "Qt"; submodules: ["qml", "quick", "gui", "svg"] }
-//    Depends { name: "libqtqmltricks-qtsupermacros" }
+    Depends { name: "libqtqmltricks-qtsupermacros" }
 
-//    cpp.defines: generalDefines.concat(['QTQMLTRICKS_NO_PREFIX_ON_GETTERS'])
+    cpp.defines: generalDefines.concat(['QTQMLTRICKS_NO_PREFIX_ON_GETTERS'])
     cpp.includePaths: ["../../submodules/mavlink/common"]
 
     Group {

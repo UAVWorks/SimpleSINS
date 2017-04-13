@@ -39,6 +39,7 @@ private:
     bool mConnected{ false };
 
 signals:
+    void update(float roll, float pitch, float yaw);
 
 public slots:
     void onReadyRead();

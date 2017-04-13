@@ -45,10 +45,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("GroundControlStation");
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
-    QString qmlFilesPath = QString("%1/%2").arg(QCoreApplication::applicationDirPath(), APP_QML_MODULES_PATH);
     QQmlApplicationEngine engine;
-    engine.addImportPath(qmlFilesPath);
-
     qmlRegisterType<TAerialVehicle>("sim.AerialVehicle", 1, 0, "AerialVehicle");
     engine.load(QUrl(QStringLiteral("qrc:/gui/qml/main.qml")));
 

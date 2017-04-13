@@ -4,3 +4,6 @@
 [submodule "GroundControlStation/submodules/qt-qbs-application"]
 	path = GroundControlStation/submodules/qt-qbs-application
 	url = https://github.com/approximator/Qt-Qbs-Application.git
+[submodule "GroundControlStation/submodules/qt-super-macros"]
+	path = GroundControlStation/submodules/qt-super-macros
+	url = https://github.com/approximator/Qt-Super-Macros.git
