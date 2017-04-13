@@ -27,6 +27,6 @@ Project {
 
     references: [
         "src/gcs.qbs",
-//        "submodules/modules.qbs",
+        "submodules/modules.qbs",
     ]
 }

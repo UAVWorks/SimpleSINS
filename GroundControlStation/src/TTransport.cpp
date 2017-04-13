@@ -91,11 +91,14 @@ void TTransport::onReadyRead()
                     mavlink_heartbeat_t heartbeat;
                     mavlink_msg_heartbeat_decode(&message, &heartbeat);
                     break;
-                case MAVLINK_MSG_ID_RAW_IMU:
-                    mavlink_raw_imu_t imu_data;
-                    mavlink_msg_raw_imu_decode(&message, &imu_data);
-                    qDebug() << "Imu data. \nxgyro = " << imu_data.xgyro << "\nygyro = " << imu_data.ygyro
-                             << "\nzgyro = " << imu_data.zgyro;
+                case MAVLINK_MSG_ID_ATTITUDE:
+                    mavlink_attitude_t imu_data;
+                    mavlink_msg_attitude_decode(&message, &imu_data);
+                    qDebug() << "Imu data. \ntime = " << imu_data.time_boot_ms << "\nrollspeed = " << imu_data.rollspeed
+                             << "\npitchspeed = " << imu_data.pitchspeed << "\nyawspeed = " << imu_data.yawspeed
+                             << "\nroll = " << imu_data.roll << "\npitch = " << imu_data.pitch
+                             << "\nyaw = " << imu_data.yaw;
+                    emit update(imu_data.roll, imu_data.pitch, imu_data.yaw);
                     break;
                 default:
                     qDebug() << "Unknown message";

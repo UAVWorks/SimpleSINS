@@ -5,7 +5,7 @@ import Qt3D.Extras 2.0
 
 
 Entity {
-    property vector3d position: Qt.vector3d(0, 0, 0)
+    property vector3d attitude: Qt.vector3d(0, 0, 0)
 
     PhongMaterial {
         id: material
@@ -20,14 +20,11 @@ Entity {
 
     Transform {
         id: transform
-        property real userAngle: 50
-        matrix: {
-            var m = Qt.matrix4x4();
-            m.rotate(userAngle, Qt.vector3d(0, 1, 0))
-            m.rotate(userAngle, Qt.vector3d(1, 0, 0))
-            m.translate(position);
-            return m;
-        }
+
+        rotationX: -attitude.y + 90
+        rotationY: attitude.x + 90
+        rotationZ: -attitude.z
+        scale3D: Qt.vector3d(4, 2, 1)
     }
 
     components: [ plane, material, transform ]

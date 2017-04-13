@@ -34,10 +34,13 @@ Entity {
         InputSettings { }
     ]
 
-    AerialVehicle {}
+    AerialVehicle {
+        id: vehicle
+    }
 
     Aircraft {
         id: av
+        attitude: vehicle.attitude
 
         Component.onCompleted: {
             console.log("Aircraft created");
