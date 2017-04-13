@@ -35,6 +35,7 @@
 extern UART_HandleTypeDef huart1;
 
 uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+mavlink_attitude_t imu_data = { 0 };
 mavlink_message_t msg;
 
 void main_init()
@@ -45,12 +46,13 @@ void main_init()
     BSP_LED_Off(LED_RED);
     BSP_LED_Off(LED_GREEN);
 
+    memset(&imu_data, 0, sizeof(imu_data));
+
     imu_init();
 }
 
 void main_loop_step()
 {
-    mavlink_raw_imu_t imu_data;
     imu_read(&imu_data);
 
     mavlink_msg_heartbeat_pack(1, 200, &msg, MAV_TYPE_GENERIC, MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_ARMED,
@@ -62,10 +64,9 @@ void main_loop_step()
         BSP_LED_Off(LED_RED);
     }
 
-    mavlink_msg_raw_imu_pack(1, MAV_COMP_ID_IMU, &msg, HAL_GetTick(), 0, 0, 0, imu_data.xgyro, imu_data.ygyro,
-                             imu_data.zgyro, 0, 0, 0);
+    mavlink_msg_attitude_pack(1, MAV_COMP_ID_IMU, &msg, HAL_GetTick(), imu_data.roll, imu_data.pitch, imu_data.yaw,
+                              imu_data.rollspeed, imu_data.pitchspeed, imu_data.yawspeed);
     len = mavlink_msg_to_send_buffer(buf, &msg);
-
     if (HAL_OK != HAL_UART_Transmit(&huart1, buf, len, 65000)) {
         BSP_LED_On(LED_RED);
     } else {
@@ -73,5 +74,5 @@ void main_loop_step()
     }
 
     BSP_LED_Toggle(LED_GREEN);
-    HAL_Delay(100);
+    HAL_Delay(10);
 }

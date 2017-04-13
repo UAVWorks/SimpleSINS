@@ -29,7 +29,6 @@
 #include <mavlink.h>
 
 HAL_StatusTypeDef imu_init();
-
-int imu_read(mavlink_raw_imu_t *imu_data);
+int imu_read(mavlink_attitude_t *imu_data);
 
 #endif  // SINS_IMU_H

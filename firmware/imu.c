@@ -23,7 +23,21 @@
 
 #include "imu.h"
 
+static const float ROLL_COMPENSATION = -4.0;
+static const float PITCH_COMPENSATION = 4.0;
+static const float YAW_COMPENSATION = -0.2;
 static float buffer[3] = { 0 };
+static uint32_t prevTick = 0;
+
+float runge_kutta(const float h, const float val)
+{
+    const float k1 = h * val;
+    const float k2 = h * val + k1 / 2;
+    const float k3 = h * val + k2 / 2;
+    const float k4 = h * val + k3;
+    const float d = (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+    return d;
+}
 
 HAL_StatusTypeDef imu_init()
 {
@@ -36,14 +50,23 @@ HAL_StatusTypeDef imu_init()
     return result;
 }
 
-int imu_read(mavlink_raw_imu_t *imu_data)
+int imu_read(mavlink_attitude_t *imu_data)
 {
     BSP_GYRO_GetXYZ(buffer);
 
-    imu_data->time_usec = HAL_GetTick();
-    imu_data->xgyro = (int16_t)buffer[0];
-    imu_data->ygyro = (int16_t)buffer[1];
-    imu_data->zgyro = (int16_t)buffer[2];
+    uint32_t currentTick = HAL_GetTick();
+    uint32_t millisElapsed = currentTick - prevTick;
+    prevTick = currentTick;
+
+    imu_data->time_boot_ms = currentTick;
+
+    imu_data->rollspeed = buffer[0] / 1000.0 + ROLL_COMPENSATION;
+    imu_data->pitchspeed = buffer[1] / 1000.0 + PITCH_COMPENSATION;
+    imu_data->yawspeed = buffer[2] / 1000.0 + YAW_COMPENSATION;
+
+    imu_data->roll += runge_kutta(millisElapsed / 1000.0, imu_data->rollspeed);
+    imu_data->pitch += runge_kutta(millisElapsed / 1000.0, imu_data->pitchspeed);
+    imu_data->yaw += runge_kutta(millisElapsed / 1000.0, imu_data->yawspeed);
 
     return true;
 }
